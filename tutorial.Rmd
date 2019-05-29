@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.align = 'center', message = FALSE,
 ggResidpanel provides a way to easily create and view diagnostic plots from models in R using ggplot2 graphics. The goal in creating the package was to allow a model to be passed to a function that returns a panel of diagnostic plots that can be viewed simultaneously. The panel allows the user to scan plots of interest to check for violations of model assumptions or lack of fit. The idea to portray the plots in a grid was motivated by the residual panel plots provided in [SAS procedures](https://support.sas.com/documentation/cdl/en/statug/63962/HTML/default/viewer.htm#statug_mixed_sect030.htm). In addition to being able to view plots in a panel, ggResidpanel allows for the creation of panels with interactive plots and the ability to view plots from multiple models in the same panel. These operations can be obtained by applying one of the four functions listed below to a model. 
 
 - [`resid_panel`](#resid_panel): Creates a panel of diagnostic plots of the residuals from a model
-- [`resid_interact`](#resid_interact): Creates an interactive panel of diagnostic plots of the residuals form a model
+- [`resid_interact`](#resid_interact): Creates an interactive panel of diagnostic plots of the residuals from a model
 - [`resid_xpanel`](#resid_xpanel): Creates a panel of diagnostic plots of the predictor variables 
 - [`resid_compare`](#resid_compare): Creates a panel of diagnostic plots from multiple models
 
@@ -31,7 +31,7 @@ As of now, ggResidpanel allows these functions to work with models of type "lm",
 
 - [`resid_auxpanel`](#resid_auxpanel): Creates a panel of diagnostic plots for model types not included in the package
 
-All functions in the package include the ability to select which plots to include in the panel, ways to to adjust plot characteristics, and options to change the figure format. Each function has a section in this vignette with details on how to use the function and examples. 
+All functions in the package include the ability to select which plots to include in the panel, ways to adjust plot characteristics, and options to change the figure format. Each function has a section in this vignette with details on how to use the function and examples. 
 
 ## Installation {#installation}
 
@@ -86,17 +86,17 @@ resid_panel(tree_model)
 
 ## Plots {#plots}
 
-The `plots` option in `resid_panel` allows the user to select the designed plots to include in the panel. There are three ways a user can do this.
+The `plots` option in `resid_panel` allows the user to select the designated plots to include in the panel. There are three ways a user can do this.
 
 1. Specify an [individual plot](#individual) to create one plot
 2. Specify a [vector of plots](#vector) included in the package to create a panel including these plots
 3. Specify the name of a [prespecified panel](#prespecified) of plots included in the package
 
-Explanations and examples for each of these methods are included in the next three sections.
+Explanations and examples for each of these options are included in the next three sections.
 
 ### Individual Plots {#individual}
 
-An individual plot can be created by including the option of `plots = "name of plot"` in the `resid_panel` function. The name of the plot must be in quotations. There are currently nine plots included in the package with `resid_panel`. Their names in the packages are as follows.
+An individual plot can be created by including the option of `plots = "name of plot"` in the `resid_panel` function. The name of the plot must be in quotations. There are currently nine plots included in the package with `resid_panel`. Their names in the package are as follows.
 
 - [`boxplot`](#boxplot)
 - [`cookd`](#cookd)
@@ -143,7 +143,6 @@ This is another plot that can be used to visualize the distribution of the resid
 ```{r}
 # Creates a histogram of the residuals
 resid_panel(tree_model, plots = "hist")
-
 # Creates a histogram with 20 bins
 resid_panel(tree_model, plots = "hist", bins = 20)
 ```
@@ -152,14 +151,13 @@ resid_panel(tree_model, plots = "hist", bins = 20)
 
 The option of `plots = "index"` creates a plot of the residuals versus the observation numbers. A solid blue horizontal line through 0 is included for reference.
 
-`residual_panel` includes a `smoother` indicator option. If set to `TRUE`, a loess smoother will included on the index plot as a red solid line. If set to `FALSE`, it will not be included. By default, `smoother = FALSE`. (This option also affects the `lev`, `ls`, and `resid` plots.)
+`resid_panel` includes a `smoother` indicator option. If set to `TRUE`, a loess smoother will included on the index plot as a red solid line. If set to `FALSE`, it will not be included. By default, `smoother = FALSE`. (This option also affects the `lev`, `ls`, and `resid` plots.)
 
-This plot can be used to look for patterns in the residuals in regards to the manner in which the data used to fit the model have been ordered. Often the data are ordered in a meaningful way such as by time of observation. This plot can help to check if there is any relationship between the residuals and the order of the data. If a trend is found in this plot, it may suggest that a variable has been excluded from the model that would help to explain the variation in the response variable.
+This plot can be used to look for patterns in the residuals in regards to the order of the data used to fit the model. Often the data are ordered in a meaningful way such as by time of observation. This plot can help to check if there is any relationship between the residuals and the order of the data. If a trend is found in this plot, it may suggest that a variable has been excluded from the model that would help to explain the variation in the response variable.
 
 ```{r}
 # Creates an index plot of the residuals
 resid_panel(tree_model, plots = "index")
-
 # Creates an index plot with a smoother added
 resid_panel(tree_model, plots = "index", smoother = TRUE)
 ```
@@ -168,18 +166,17 @@ resid_panel(tree_model, plots = "index", smoother = TRUE)
 
 The option of `plots = "lev"` creates a plot of the standardized residuals versus the leverage values. This plot is only available for "lm" and "glm" models. A horizontal line through 0 and a vertical line through 0 are included as black dashed lines to mimic the residual-leverage plot created by the [`plot.lm`](https://www.rdocumentation.org/packages/stats/versions/3.5.2/topics/plot.lm) function from base R. The red dashed lines are Cook's distance contour lines for Cook's D values of 0.5 and 1. These values were chosen based on the default options used in `plot.lm`. 
 
-The `residual_panel` option of `smoother` affects the location-scale plot. If set to `TRUE`, a loess smoother will included on the residual-leverage plot as a red solid line. If set to `FALSE`, it will not be included. By default, `smoother = FALSE`. (This option also affects the `index`, `ls`, and `resid` plots.)
+The `smoother` option in `resid_panel` also affects the location-scale plot. If set to `TRUE`, a loess smoother will be included on the residual-leverage plot as a red solid line. If set to `FALSE`, it will not be included. By default, `smoother = FALSE`. (This option also affects the `index`, `ls`, and `resid` plots.)
 
 The Cook's D contour lines are computed using the fact that Cook's distance can be written as a function of the leverage and the standardized residual. For observation $i$, let $D_i$ represent the Cook's distance, $r_i$ represent the standardized residual, and $h_i$ represent the leverage value. Finally, let $p$ be the rank of the model. Cook's distance can be computed as
   $$D_i = \frac{r^2_i}{p}\left(\frac{h_i}{1-h_i}\right).$$
 (Seber and Lee 2003). Thus, given a specified value of Cook's D, a leverage value ($h_i$), and the rank of the model ($p$), it is possible to solve for the value of the standardized residual ($r_i$). The value of $D_i=1$ is used since a data point with a value of Cook's D larger than 1 is often considered to be a point with high leverage (Chatterjee and Hadi 2012).
 
-This plot can be used to look for trends in the residuals based on the leverage values and to identify points with high leverage. Points that fall outside of the Cook's D contours lines may be of interest. Points that fall outside of the contour line with Cook's D set to 1 are considered to be high leverage points. As seen in the plot below, not all contour lines may appear when the plot is created if they fall far outside of the range of the observed leverage values.
+This plot can be used to look for trends in the residuals based on the leverage values and to identify points with high leverage. Points that fall outside of the Cook's D contour lines may be of interest. Points that fall outside of either contour line with Cook's D set to 1 are considered to be high leverage points. As seen in the plot below, not all contour lines may appear when the plot is created if they fall far outside of the range of the observed leverage values.
 
 ```{r}
 # Creates a residual-leverage plot
 resid_panel(tree_model, plots = "lev")
-
 # Creates a residual-leverage plot with a smoother added
 resid_panel(tree_model, plots = "lev", smoother = TRUE)
 ```
@@ -188,15 +185,14 @@ resid_panel(tree_model, plots = "lev", smoother = TRUE)
 
 The option of `plots = "ls"` creates a location-scale plot of the residuals. This plot is only available for "lm" and "glm" models. It plots the square root of the absolute value of the standardized residuals on the y-axis and the predicted values on the x-axis. The predicted values are plotted on the original scale for "glm" and "glmer" models. 
 
-The `residual_panel` option of `smoother` affects the location-scale plot. If set to `TRUE`, a loess smoother will included on the location-scale plot as a red solid line. If set to `FALSE`, it will not be included. By default, `smoother = FALSE`. (This option also affects the `index`, `lev`, and `resid` plots.)
+The `smoother` option in `resid_panel` affects the appearance pf the location-scale plot. If set to `TRUE`, a loess smoother will be included on the location-scale plot as a red solid line. If set to `FALSE`, it will not be included. By default, `smoother = FALSE`. (This option also affects the `index`, `lev`, and `resid` plots.)
 
 The location-scale plot can be used to check for patterns in the residuals in relationship to the predicted values. For example, homogeneity of the residuals can be diagnosed by determining whether the residuals show equal spread along the range of the predicted values. In the ideal situation, the loess curve would be a straight line with points evenly dispersed around it for the whole range of the predicted values.
 
 ```{r}
 # Creates a location-scale plot of the residuals
 resid_panel(tree_model, plots = "ls")
-
-# Creates a location-scale plot of the residuals with a 
+# Creates a location-scale plot of the residuals with a smoother added 
 resid_panel(tree_model, plots = "ls", smoother = TRUE)
 ```
 
@@ -211,10 +207,8 @@ This plot is meant to be used to check if the residuals approximately follow a n
 ```{r}
 # Creates a normal quantile plot of the residuals
 resid_panel(tree_model, plots = "qq")
-
 # Creates a qq-plot with the 1-1 line removed
 resid_panel(tree_model, plots = "qq", qqline = FALSE)
-
 # Creates a qq-plot with the confidence bands added
 resid_panel(tree_model, plots = "qq", qqbands = TRUE)
 ```
@@ -223,14 +217,13 @@ resid_panel(tree_model, plots = "qq", qqbands = TRUE)
 
 The option of `plots = "resid"` creates a plot of the residuals versus the predicted values. The predicted values are plotted on the original scale for "glm" and "glmer" models. A solid blue horizontal line through 0 is included for reference.
 
-The `residual_panel` indicator option of `smoother` affects the residual plot. If set to `TRUE`, a loess smoother will included on the residual plot as a red solid line. If set to `FALSE`, it will not be included. By default, `smoother = FALSE`. (This option also affects the `index`, `lev`, and `ls` plots.)
+The `smoother` option in the `resid_panel` function can add a smoother to this plot. If set to `TRUE`, a loess smoother will be included on the residual plot as a red solid line. If set to `FALSE`, it will not be included. By default, `smoother = FALSE`. (This option also affects the `index`, `lev`, and `ls` plots.)
 
-The residual plot can be used to check for homogeneity (constant variance) of the residuals and possible violations of the linearity assumption. The assumption of homogeneity is met if the residuals are have approximately the same variance throughout the entire range of the predicted values. The assumption of linearity may be violated if there is some trend in the residuals so that the residuals are not evenly distributed below and above 0 throughout the range of the predicted values.
+The residual plot can be used to check for homogeneity (constant variance) of the residuals and possible violations of the linearity assumption. The assumption of homogeneity is met if the residuals have approximately the same variance throughout the entire range of the predicted values. The assumption of linearity may be violated if there is some trend in the residuals so that the residuals are not evenly distributed below and above 0 throughout the range of the predicted values.
 
 ```{r}
 # Creates a residual plot
 resid_panel(tree_model, plots = "resid")
-
 # Creates a plot with the smoother added
 resid_panel(tree_model, plots = "resid", smoother = TRUE)
 ```
@@ -248,22 +241,20 @@ resid_panel(tree_model, plots = "yvp")
 
 ### User Specified Panels {#vector}
 
-The `plots` option in `resid_panel` also allows the user to specify a vector of plots to include in a panel. To do this, the user can include an option of the form of `plots = c("name of plot 1", "name of plot 2", ...))` in the function. The names of the plots must be in quotations. Any of the individual plots listed in the previous section that are available for the type of model being input to `resid_panel` can be included in the vector, and any number of plots greater than 0 can be included in the vector. Note that if a plot name is included multiple times in the vector, a plot will be created for each instance the name is included. Some examples of user specified panels are included below.
+The `plots` option in `resid_panel` also allows the user to specify a vector of plots to include in a panel. To do this, the user can include an option of the form of `plots = c("name of plot 1", "name of plot 2", ...))` in the function. The names of the plots must be in quotations. Any of the individual plots listed in the previous section can be included in the vector if they are available for the type of model being input to `resid_panel`. Also, any number of plots greater than 0 can be included in the vector. Note that if a plot name is included multiple times in the vector, a plot will be created for each instance the name is included. Some examples of user specified panels are included below.
 
 ```{r}
 # Creates a panel with a user specified vector of two plot names
 resid_panel(tree_model, plots = c("resid", "qq"))
-
 # Creates a panel from a vector of four plot names
 resid_panel(tree_model, plots = c("hist", "ls", "cookd", "lev"))
-
 # An example to show what happens if a plot name is included multiple times in the vector
 resid_panel(tree_model, plots = c("resid", "resid"))
 ```
 
 ### Package Prespecified Panels {#prespecified}
 
-ggResidpanel includes prespecified panel options for `resid_panel` that the authors of the package thought users would find helpful. These can be used by including the option of `plots = "specified panel name"` in `resid_panel`. The four package included panel option are as follows.
+ggResidpanel includes prespecified panel options for `resid_panel` that the authors of the package thought users would find helpful. These can be used by including the option of `plots = "specified panel name"` in `resid_panel`. The four panel options included in the package are as follows.
 
 - [`all`](#all)
 - [`default`](#default)
@@ -288,7 +279,6 @@ Unsurprisingly, the option of `plots = "default"` is the default panel displayed
 ```{r}
 # Creates the default panel of plots
 resid_panel(tree_model)
-
 # Creates the default panel with the option explicitly specified
 resid_panel(tree_model, plots = "default")
 ```
@@ -300,7 +290,6 @@ The option of `plots = "R"` is designed to mimic the diagnostic plots created by
 ```{r}
 # Creates the R panel of plots with the smoother option set to TRUE
 resid_panel(tree_model, plots = "R", smoother = TRUE)
-
 # These are the lm diagnostic plots from base R which the "R" panel is designed to mimic
 par(mfrow = c(2,2)) # Creates a 2x2 grid of plots
 plot(tree_model)    # Creates the base R diagnostic plots
@@ -396,7 +385,6 @@ The option of `scale` adjust the size of the graphs in the panel. It takes value
 ```{r}
 # Creates a panel of plots with the default scale
 resid_panel(tree_model, plots = c("lev", "yvp", "ls", "cookd"))
-
 # Creates the same panel of plots shown above with a scale of 0.9 
 resid_panel(tree_model,  plots = c("lev", "yvp", "ls", "cookd"), scale = 0.9)
 ```
@@ -408,14 +396,13 @@ The option of `theme` adjusts the ggplot2 theme to be used when creating the plo
 ```{r}
 # Creates the default panel with the classic theme
 resid_panel(tree_model, theme = "classic")
-
 # Creates the default panel with the grey theme
 resid_panel(tree_model, theme = "grey")
 ```
 
 #### `title.opt`: Title Option {#title.opt}
 
-The option of `title.opt` indicates whether or not to include a title on the plots in the panel. It can be set to TRUE or FALSE, and the default is set to TRUE.
+The option of `title.opt` indicates whether or not to include a title on the plots in the panel. It can be set to `TRUE` or `FALSE`, and the default is set to `TRUE`.
 
 ```{r}
 # Creates the default panel with the titles removed
@@ -426,11 +413,11 @@ resid_panel(tree_model, title.opt = FALSE)
 
 ## Overview
 
-The function `resid_interact` makes use of the [plotly](https://cran.r-project.org/web/packages/plotly/index.html) package to create interactive panels of diagnostic plots. The interactivity allows users to hover their cursor over plots to easily access information about the points that is included in the dataset. This function was included with the intention of helping users identify outliers and points of interest.
+The function `resid_interact` makes use of the [plotly](https://cran.r-project.org/web/packages/plotly/index.html) package to create interactive panels of diagnostic plots. The interactivity allows users to hover their cursor over plots to easily access information about the points that are included in the dataset. This function was included with the intention of helping users identify outliers and points of interest.
 
 `resid_interact` functions in a similar way to `resid_panel`. It has (mostly) the same input options, and it includes the same plots and prespecified panels. Similar to `resid_panel`, `resid_interact` currently requires a model of type "lm", "glm", "lmer", "glmer", "lmerTest", or "lme".
 
-The first argument in `resid_interact` is the `model` option. The most basic way to use `resid_interact` is to input a model into the function as seen below. It creates an interactive version of the default panel from `resid_panel`. When the cursor is hovered over a point, a tooltip appears. The first two lines contain the $x$ and $y$ coordinates of the point. The remaining lines that appear after "Data:" are the observed values for the data point for all of the variables included in the model and the observation number. Different types of plots have slightly varying types of interactivity. All of the functionality is described below in the section on [individual plots](#interact_ind).
+The first argument in `resid_interact` is the `model` option. The most basic way to use `resid_interact` is to input a model into the function as seen below. It creates an interactive version of the default panel from `resid_panel`. When the cursor is hovered over a point, a tooltip appears. It contains the $x$ and $y$ coordinates of the point. The remaining lines that appear after "Data:" are the observed values for the data point for all of the variables included in the model and the observation number. Different types of plots have slightly varying types of interactivity. All of the functionality is described below in the section on [individual plots](#interact_ind).
 
 ```{r}
 # Creates an interactive version of the default panel from resid_panel
@@ -465,7 +452,7 @@ Again, all plots are available to be used with "lm" and "glm" models, but `cookd
 
 #### `boxplot`: Boxplot of the Residuals {#interact_boxplot}
 
-The option `plots = "boxplot"` creates an interactive boxplot. If the cursor is hovered over the vertical line created by the whiskers in the plot, a tooltip appears at the location of each of the residual points. (Note that the points are not visible on the plot.) The tooltip first lists the value of the residual, and the remaining information lists the variables included in the model with the observed value and the observation number of the point. If the cursor is hovered anywhere else on the boxplot, tooltips will appear showing the location and value of the minimum, maximum, median, and first and third quantiles of the residuals.
+The option `plots = "boxplot"` creates an interactive boxplot. If the cursor is hovered over the vertical line created by the whiskers in the plot, a tooltip appears at the location of each of the residual points. (Note that the points are not visible on the plot.) The tooltip lists the value of the residual, and the remaining information lists the variables included in the model with the observed value and the observation number of the point. If the cursor is hovered anywhere else on the boxplot, tooltips will appear showing the location and value of the minimum, maximum, median, and first and third quantiles of the residuals.
 
 ```{r}
 # Creates an interactive boxplot of the residuals
@@ -474,7 +461,7 @@ resid_interact(tree_model, plots = "boxplot")
 
 #### `cookd`: Cook’s Distance Plot {#interact_cookd}
 
-The option `plots = "cookd"` creates an interactive Cook's distance plot. When the cursor is hovered over a point, a tooltip is displayed. It first lists the Cook's D value for that point, and then it lists the observed data values and observation number. This plot is only available for “lm” and “glm” models.
+The option `plots = "cookd"` creates an interactive Cook's distance plot. When the cursor is hovered over a point, a tooltip is displayed. It lists the Cook's D value for that point as well as the observed data values and observation number. This plot is only available for “lm” and “glm” models.
 
 ```{r}
 # Creates an interactive Cook's D plot
@@ -483,42 +470,39 @@ resid_interact(tree_model, plots = "cookd")
 
 #### `hist`: Histogram of the Residuals {#interact_hist}
 
-The option of `plots = "hist"` creates an interactive histogram of the residuals. The cursor can be hovered over the bars in the histogram to display a tooltip that lists the density value at the top of the bar and the number of observations in the bar ("count"). If the cursor is hovered over the bottom on the plot where the density is equal to 0, a tooltip appears that shows the location of the data points and lists the observed variable values and the observation number of the data point.
+The option of `plots = "hist"` creates an interactive histogram of the residuals. The cursor can be hovered over the bars in the histogram to display a tooltip that lists the density value at the top of the bar and the number of observations in the bar ("count"). If the cursor is hovered over the bottom of the plot where the density is equal to 0, a tooltip appears that shows the location of the data points and lists the observed variable values and the observation number of the data point.
 
 `resid_interact` includes the same `bins` option as `resid_panel` for the histogram. It allows the user to specify the number of bins to use when creating the histogram. Again, by default, `bins = 30`.
 
 ```{r}
 # Creates an interactive histogram of the residuals
 resid_interact(tree_model, plots = "hist")
-
 # Creates an interactive histogram with 20 bins
 resid_interact(tree_model, plots = "hist", bins = 20)
 ```
 
 #### `index`: Index Plot of the Residuals {#interact_index}
 
-The option of `plots = "index"` creates an interactive index plot of the residuals. The cursor can be hovered over a data point to see a tooltip that containing the the observation number of the point, the value of the residual, and the observed variable values.
+The option of `plots = "index"` creates an interactive index plot of the residuals. The cursor can be hovered over a data point to see a tooltip that contains the observation number of the point, the value of the residual, and the observed variable values.
 
 `resid_interact` also includes the `smoother` option for the index plot which indicates whether or not to include a loess smoother on the index plot. Set `smoother = TRUE` to have the smoother appear. The default is `smoother = FALSE`. This option also affects the residual-leverage, location-scale, and residual plots if included in the same panel.
 
 ```{r}
 # Creates an interactive index plot of the residuals
 resid_interact(tree_model, plots = "index")
-
 # Creates an interactive index plot with a smoother
 resid_interact(tree_model, plots = "index", smoother = TRUE)
 ```
 
-#### `lev`" Residual-Leverage Plot {#interact_lev}
+#### `lev` Residual-Leverage Plot {#interact_lev}
 
-The option `plots = "lev"` creates an interactive residual-leverage plot. The cursor can be hovered over a data point to see a tooltip that contains the leverage, the standardized residual, the observed variable values, and the observation number of the data points. It is also possible to hover over the Cook's D contour lines to see the leverage and standardized residual values at a location on the line. This plot is only available for “lm” and “glm” models.
+The option `plots = "lev"` creates an interactive residual-leverage plot. The cursor can be hovered over a data point to see a tooltip that contains the leverage, the standardized residual, the observed variable values, and the observation number of the data points. This plot is only available for “lm” and “glm” models.
 
 The `smoother` option in `resid_interact` is also available for the residual-leverage plot. It indicates whether or not to include a loess smoother on the plot. Set `smoother = TRUE` to have the smoother appear. The default is `smoother = FALSE`. This option also affects the index, location-scale, and residual plots if included in the same panel.
 
 ```{r}
 # Creates an interactive residual-leverage plot
 resid_interact(tree_model, plots = "lev")
-
 # Creates an interactive residual-leverage plot with a smoother
 resid_interact(tree_model, plots = "lev", smoother = TRUE)
 ```
@@ -532,7 +516,6 @@ The `smoother` option in `resid_interact` is also available for the location-sca
 ```{r}
 # Creates an interactive location-scale plot
 resid_interact(tree_model, plots = "ls")
-
 # Creates an interactive location-scale plot with a smoother
 resid_interact(tree_model, plots = "ls", smoother = TRUE)
 ```
@@ -541,12 +524,11 @@ resid_interact(tree_model, plots = "ls", smoother = TRUE)
 
 The option `plots = "qq"` creates an interactive normal quantile plot. When the cursor is hovered over a point, a tooltip appears that displays the theoretical value, the sample quantile, the observed data values, and the observation number of the point.
 
-`resid_interact` contains the same option of `qqline` that is included with `resid_panel`. It indicates whether to include a 1-1 line on the qq-plot. If TRUE is specified, the line is included. By default, `qqline = TRUE`. The option of `qqbands` that is included with `resid_panel` has not been implemented in plotly, so it is not available as an option with `resid_interact`.
+`resid_interact` contains the same option of `qqline` that is included with `resid_panel`. It indicates whether to include a 1-1 line on the qq-plot. If `TRUE` is specified, the line is included. By default, `qqline = TRUE`. The option of `qqbands` that is included with `resid_panel` has not been implemented in plotly, so it is not available as an option with `resid_interact`.
 
 ```{r}
 # Creates an interactive normal quantile plot
 resid_interact(tree_model, plots = "qq")
-
 # Creates a normal quantile plot with the 1-1 line removed
 resid_interact(tree_model, plots = "qq", qqline = FALSE)
 ```
@@ -560,7 +542,6 @@ The `smoother` option in `resid_interact` is also available for the residual plo
 ```{r}
 # Creates an interactive residual plot
 resid_interact(tree_model, plots = "resid")
-
 # Creates the residual plot with a smoother
 resid_interact(tree_model, plots = "resid", smoother = TRUE)
 ```
@@ -581,7 +562,6 @@ resid_interact(tree_model, plots = "yvp")
 ```{r}
 # Creates a panel with a user specified vector of two plot names
 resid_interact(tree_model, plots = c("resid", "qq"))
-
 # Creates a panel from a vector of four plot names
 resid_interact(tree_model, plots = c("hist", "ls", "cookd", "lev"))
 ```
@@ -664,12 +644,11 @@ For predictor variables that are factors, the levels shown on the x-axis will be
 
 ## Plots
 
-`resid_xpanel` includes the option of `yvar`. This allows the user to specify whether the residuals or the response variable from the model should be plotted on the y-axes of the plots in the panel. If `yvar = "residual"`, then the residuals will be plotted on the y-axes. A solid blue horizontal will also be included through 0 for reference. If `yvar = "response"`, then the response variable will be plotted on the y-axes. By default, `yvar` is set to `"residual"`.
+`resid_xpanel` includes the option of `yvar`. This allows the user to specify whether the residuals or the response variable from the model should be plotted on the y-axes of the plots in the panel. If `yvar = "residual"`, then the residuals will be plotted on the y-axes. A solid blue horizontal line will also be included at 0 for reference. If `yvar = "response"`, then the response variable will be plotted on the y-axes. By default, `yvar` is set to `"residual"`.
 
 ```{r}
 # Creates an xpanel with the y-axis option of residual explicitly specified
 resid_xpanel(tree_model, yvar = "residual")
-
 # Creates an xpanel with the y-axis option set to response
 resid_xpanel(tree_model, yvar = "response")
 ```
@@ -679,7 +658,6 @@ resid_xpanel(tree_model, yvar = "response")
 ```{r}
 # Creates an xpanel with residuals on the y-axis and with loess smoothers on all of the plots
 resid_xpanel(tree_model, smoother = TRUE)
-
 # Creates an xpanel with the response variable on the y-axis and with loess smoothers on all of the plots
 resid_xpanel(tree_model, yvar = "response",smoother = TRUE)
 ```
@@ -702,17 +680,15 @@ resid_xpanel(tree_model, yvar = "response",smoother = TRUE)
 
 ## Overview 
 
-The function of `resid_compare` was created to allow for the comparison of diagnostic plots between models. This function may be particularly helpful when a model assumption is not met and an adjustment is made to the model such as a transformation of the response in order to try to meet the model assumptions. `resid_compare` creates a panel with residual diagnostic plots from both models given a list of the models. This allows for side by side comparison of the changes in the diagnostic plots to determine if the adjustment are effective. `resid_compare` currently accepts models of type "lm", "glm", "lmer", "glmer", "lmerTest", and "lme".
+The function of `resid_compare` was created to allow for the comparison of diagnostic plots between models. This function may be particularly helpful when a model assumption is not met and an adjustment is made to the model such as a transformation of the response in order to try to meet the model assumptions. `resid_compare` creates a panel with residual diagnostic plots from both models given a list of the models. This allows for side by side comparison of the changes in the diagnostic plots to determine if the adjustments are effective. `resid_compare` currently accepts models of type "lm", "glm", "lmer", "glmer", "lmerTest", and "lme".
 
-The first argument in `resid_compare` is the `models` option, which requires a list of models. The most basic use of `resid_compare` is to only input a list of models into the function. The diagnostic plots from from the `tree_model` suggest possible issues with linearity and homogeneity. The code below fits two new models that attempt to deal with these issues. The three models of `tree_model`, `tree_model_squared`, and `tree_model_log` are input into `resid_compare` as a list. This creates a 4x3 panel of plots. The columns represent the models, and the rows are different plot types. Each plot type is created for all three models. By default, the four plots in the default `resid_panel` appear. `resid_compare` includes options to change the plots and adjust the appearance of the figure.
+The first argument in `resid_compare` is the `models` option, which requires a list of models. The most basic use of `resid_compare` is to only input a list of models into the function.The diagnostic plots from the `tree_model` suggest possible issues with linearity and homogeneity. The code below fits two new models that attempt to deal with these issues. The three models of `tree_model`, `tree_model_squared`, and `tree_model_log` are input into `resid_compare` as a list. This creates a 4x3 panel of plots. The columns represent the models, and the rows are different plot types. Each plot type is created for all three models. By default, the four plots in the default `resid_panel` appear. `resid_compare` includes options to change the plots and adjust the appearance of the figure.
 
 ```{r fig.height = 8, fig.width = 12}
 # Fits a model with the log transformed volume variable as the response
 tree_model_log <- lm(log(Volume) ~ Height + Girth, data = trees)
-
 # Fits a model with an added squared term of girth
 tree_model_squared <- lm(Volume ~ Height + Girth + I(Girth^2), data = trees)
-
 # Creates a panel with the four default diagnostic plots for all three models
 resid_compare(models = list(tree_model, tree_model_log, tree_model_squared))
 ```
@@ -787,13 +763,10 @@ The code below fits a random forest model to the `trees` data. It specifies the 
 ```{r}
 # Fits a random forest model to the trees data
 rf_model <- randomForest::randomForest(x = trees[,1:2], y = trees[,3])
-
 # Obtains the predictions from the model on the observed data
 rf_pred <- predict(rf_model, trees[,1:2])
-
 # Obtains the residuals from the model
 rf_resid <- trees[,3] - rf_pred
-
 # Creates a panel with residual and index plots
 resid_auxpanel(residuals = rf_resid, 
                predicted = rf_pred, 
@@ -840,4 +813,3 @@ Chatterjee, S. & Hadi, A. S. Regression Analysis by Example. (Wiley, 2012).
 Rawlings, J. O., Pantula, S. G. & Dickey, D. A. Applied Regression Analysis: A Research Tool. (Springer, 1998).
 
 Seber, G. A. F. & Lee, A. J. Linear Regression Analysis, 2nd Edition. (John Wiley & Sons, 2003).
-
