@@ -35,10 +35,13 @@ All functions in the package include the ability to select which plots to includ
 
 ## Installation {#installation}
 
-The package is currently only available on GitHub. The intention is to add the package to CRAN in the near future. For now, the following code can be used to install ggResidpanel using the devtools package.
+The package can be installed from CRAN, or the development version of the package can be installed from GitHub (if desired). The code below shows how to accomplish both of these tasks.
 
-```{r eval = FALSE}
-# Downloads and installs ggResidpanel from GitHub
+```{r, eval = FALSE}
+# Installs ggResidpanel from CRAN
+install.packages("ggResidpanel")
+
+# Installs the development version of ggResidpanel from GitHub
 devtools::install_github("goodekat/ggResidpanel")
 ```
 
